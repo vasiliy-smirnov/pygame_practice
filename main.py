@@ -9,29 +9,55 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
-circle_coordinates = (SCREEN_CENTER_X, SCREEN_CENTER_Y)
-circle_radius = 50
-circle_color = (255, 0, 0)
 
-triangle_coordinates = [(150, 200), (70, 300), (230, 300)]
-triangle_color = (0, 0, 255)
+class GameObject:
+    def __init__(self, surface, color):
+        self.surface = surface
+        self.color = color
 
-square_coordinates = pygame.Rect(450, 200, 100, 100)
-square_color = (0, 255, 0)
+    def draw(self):
+        pass
+
+class Circle(GameObject):
+    def __init__(self, surface, color, x, y, radius, speed):
+        super().__init__(surface, color)
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.speed = speed
+
+    def draw(self):
+        pygame.draw.circle(self.surface, 
+                self.color, 
+                (self.x, self.y), 
+                self.radius)
+
+
+circle = Circle(screen, 
+        (255, 0, 0), 
+        SCREEN_CENTER_X, 
+        SCREEN_CENTER_Y, 
+        40, 
+        10)
 
 running = True
+direction = 1
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
     screen.fill((0, 0, 0))
-    pygame.draw.circle(screen, circle_color, 
-                        (SCREEN_CENTER_X, SCREEN_CENTER_Y), 
-                        circle_radius)
-    pygame.draw.polygon(screen, triangle_color, triangle_coordinates)
-    pygame.draw.rect(screen, square_color, square_coordinates)
+    circle.draw()
+    if circle.x + circle.radius >= SCREEN_WIDTH:
+        direction = -1
+    if circle.x - circle.radius <= 0:
+        direction = 1
+    circle.x += circle.speed * direction
     pygame.display.update()
 
+    clock.tick(FPS)
+
+pygame.quit()e()
     clock.tick(FPS)
 
 pygame.quit()
